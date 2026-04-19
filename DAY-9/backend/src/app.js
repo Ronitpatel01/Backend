@@ -1,10 +1,10 @@
 const express = require("express");
-
-const mongoose = require("mongoose");
+const cors = require("cors");
 
 const noteModel = require("./models/note.model");
 
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 
@@ -27,5 +27,25 @@ app.post("/api/notes", async (req, res) => {
     note,
   });
 });
+  
+app.delete("/api/notes/:id", async (req, res) => {
+  const noteId = req.params.id;
 
+  await noteModel.findByIdAndDelete(noteId);
+  res.status(200).json({
+    msg: "Note deleted successfully",
+  });
+});
+
+app.patch("/api/notes/:id", async (req, res) => {
+  const noteId = req.params.id;
+
+  const { description } = req.body;
+
+  await noteModel.findByIdAndUpdate(noteId, { description });
+
+  res.status(200).json({
+    message: "Note updated successfully",
+  });
+});
 module.exports = app;
