@@ -7,7 +7,7 @@ const App = () => {
   const fetchNotes = async () => {
     try {
       const res = await axios.get(
-        "https://backend-ygpu.onrender.com//api/notes",
+        "https://backend-ygpu.onrender.com/api/notes",
       );
       setNotes(res.data.notes);
     } catch (error) {
@@ -17,7 +17,7 @@ const App = () => {
 
   const deleteNote = async (id) => {
     try {
-      await axios.delete(`https://backend-ygpu.onrender.com//api/notes/${id}`);
+      await axios.delete(`https://backend-ygpu.onrender.com/api/notes/${id}`);
       fetchNotes();
     } catch (error) {
       console.error("Error deleting note:", error);
@@ -26,7 +26,7 @@ const App = () => {
 
   const editNote = async (id, title, description) => {
     try {
-      await axios.patch(`https://backend-ygpu.onrender.com//api/notes/${id}`, {
+      await axios.patch(`https://backend-ygpu.onrender.com/api/notes/${id}`, {
         title,
         description,
       });
