@@ -1,12 +1,12 @@
 const express = require("express");
 const cors = require("cors");
-
 const noteModel = require("./models/note.model");
+const path = require("path");
 
 const app = express();
 app.use(cors());
-
 app.use(express.json());
+app.use(express.static("./public"));
 
 app.get("/api/notes", async (req, res) => {
   const notes = await noteModel.find();
@@ -27,7 +27,7 @@ app.post("/api/notes", async (req, res) => {
     note,
   });
 });
-  
+
 app.delete("/api/notes/:id", async (req, res) => {
   const noteId = req.params.id;
 
@@ -48,4 +48,9 @@ app.patch("/api/notes/:id", async (req, res) => {
     message: "Note updated successfully",
   });
 });
+
+app.get("*name", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "/public/index.html"));
+});
+
 module.exports = app;
