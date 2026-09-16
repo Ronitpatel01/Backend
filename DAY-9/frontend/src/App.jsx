@@ -45,7 +45,7 @@ const App = () => {
     const { title, description } = e.target.elements;
 
     axios
-      .post("https://backend-ygpu.onrender.com//api/notes", {
+      .post("https://backend-ygpu.onrender.com/api/notes", {
         title: title.value,
         description: description.value,
       })
