@@ -11,6 +11,7 @@ async function registerUser(req, res) {
   const isAlreadyRegistered = await userModel.findOne({
     $or: [{ username }, { email }],
   });
+
   if (isAlreadyRegistered) {
     return res.status(400).json({
       message: "User with same email or username already exists.",
@@ -29,7 +30,7 @@ async function registerUser(req, res) {
       id: newUser._id,
       username: newUser.username,
     },
-    process.env.jwt_secret,
+    process.env.JWT_SECRET,
     {
       expiresIn: "1d",
     },
