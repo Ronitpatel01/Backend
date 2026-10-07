@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { FaceLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
-import "./App.css";
-
-function App() {
+const FaceExpression = () => {
   const videoRef = useRef(null);
   const landmarkerRef = useRef(null);
   const animationRef = useRef(null);
@@ -266,4 +264,4 @@ function App() {
   );
 }
 
-export default App;
+export default FaceExpression

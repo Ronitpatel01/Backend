@@ -1,6 +1,8 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/user.model");
+const blacklistModel = require("../models/blacklist.model");
+const redis = require("../config/cache");
 require("dotenv").config();
 
 // const cookie = require("cookie-parser")
@@ -49,9 +51,11 @@ async function registerUser(req, res) {
 async function loginUser(req, res) {
   const { username, email, password } = req.body;
 
-  const user = await userModel.findOne({
-    $or: [{ username }, { email }],
-  }).select("+password");
+  const user = await userModel
+    .findOne({
+      $or: [{ username }, { email }],
+    })
+    .select("+password");
   if (!user) {
     return res.status(401).json({
       message: "User not found.",
@@ -71,7 +75,7 @@ async function loginUser(req, res) {
       id: user._id,
       username,
     },
-    process.env.jwt_secret,
+    process.env.JWT_SECRET,
     {
       expiresIn: "1d",
     },
@@ -87,4 +91,25 @@ async function loginUser(req, res) {
     },
   });
 }
-module.exports = { registerUser, loginUser };
+async function getMe(req, res) {
+  const user = req.user;
+  const userData = await userModel.findById(user.id).select("-password");
+  return res.status(200).json({
+    message: "User data fetched successfully.",
+    user: userData,
+  });
+}
+async function logoutUser(req, res) {
+  const token = req.cookies.token;
+
+  await redis.set(token, Date.now(), "EX", 60 * 60 * 24); // Set token in Redis with expiration of 1 day
+
+  res.clearCookie("token");
+
+  return res.status(200).json({
+    message: "User logged out successfully.",
+  });
+}
+
+// async function logoutUser(req, res) {
+module.exports = { registerUser, loginUser, getMe, logoutUser };
